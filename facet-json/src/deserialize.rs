@@ -167,6 +167,16 @@ pub fn from_slice_wip<'input, 'a>(
     stack.push(Expect::Value(WhyValue::TopLevel));
 
     loop {
+        // skip over whitespace
+        while let Some(c) = input.get(pos).copied() {
+            match c {
+                b' ' | b'\t' | b'\n' | b'\r' => {
+                    pos += 1;
+                }
+                _ => break,
+            }
+        }
+
         let frame_count = wip.frames_count();
         let expect = match stack.pop() {
             Some(expect) => expect,
@@ -273,11 +283,11 @@ pub fn from_slice_wip<'input, 'a>(
                             }
                         }
                     }
-                    b'0'..=b'9' => {
+                    b'0'..=b'9' | b'-' => {
                         let start = pos - 1;
                         while let Some(c) = input.get(pos) {
                             match c {
-                                b'0'..=b'9' => {
+                                b'0'..=b'9' | b'.' => {
                                     pos += 1;
                                 }
                                 _ => break,
@@ -350,6 +360,15 @@ pub fn from_slice_wip<'input, 'a>(
                                         } else {
                                             bailp!(JsonErrorKind::NumberOutOfRange(number));
                                         }
+                                    } else if shape.is_type::<f32>() {
+                                        if number >= f32::MIN as f64 && number <= f32::MAX as f64 {
+                                            let value = number as f32;
+                                            wip = wip.put::<f32>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<f64>() {
+                                        wip = wip.put::<f64>(number).unwrap();
                                     } else if shape.is_type::<NonZeroU8>() {
                                         if number >= 1.0 && number <= u8::MAX as f64 {
                                             let value = NonZeroU8::new(number as u8).unwrap();
