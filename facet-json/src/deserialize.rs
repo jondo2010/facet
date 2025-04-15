@@ -224,6 +224,7 @@ pub fn from_slice_wip<'input, 'a>(
                                 // okay, next we expect an item and a separator (or the end of the array)
                                 stack.push(Expect::Separator(Separator::Comma(WhyComma::Array)));
                                 stack.push(Expect::Value(WhyValue::ArrayElement));
+                                wip = wip.push().unwrap();
                             }
                         }
                     }
@@ -260,7 +261,6 @@ pub fn from_slice_wip<'input, 'a>(
                                 wip = wip.parse(&value).unwrap();
                             }
                             WhyValue::ArrayElement => {
-                                wip = wip.push().unwrap();
                                 wip = wip.parse(&value).unwrap();
                                 wip = wip.pop().unwrap();
                             }
@@ -318,6 +318,35 @@ pub fn from_slice_wip<'input, 'a>(
                                         if number >= 0.0 && number <= u64::MAX as f64 {
                                             let value = number as u64;
                                             wip = wip.put::<u64>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<i8>() {
+                                        if number >= i8::MIN as f64 && number <= i8::MAX as f64 {
+                                            let value = number as i8;
+                                            wip = wip.put::<i8>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<i16>() {
+                                        if number >= i16::MIN as f64 && number <= i16::MAX as f64 {
+                                            let value = number as i16;
+                                            wip = wip.put::<i16>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<i32>() {
+                                        if number >= i32::MIN as f64 && number <= i32::MAX as f64 {
+                                            let value = number as i32;
+                                            wip = wip.put::<i32>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<i64>() {
+                                        // Note: f64 might lose precision for large i64 values, but this is a common limitation.
+                                        if number >= i64::MIN as f64 && number <= i64::MAX as f64 {
+                                            let value = number as i64;
+                                            wip = wip.put::<i64>(value).unwrap();
                                         } else {
                                             bailp!(JsonErrorKind::NumberOutOfRange(number));
                                         }
@@ -410,7 +439,9 @@ pub fn from_slice_wip<'input, 'a>(
                             WhyValue::ObjectValue => {
                                 wip = wip.pop().unwrap();
                             }
-                            WhyValue::ArrayElement => todo!(),
+                            WhyValue::ArrayElement => {
+                                wip = wip.pop().unwrap();
+                            }
                         }
                     }
                     c => {
@@ -434,6 +465,7 @@ pub fn from_slice_wip<'input, 'a>(
                             WhyComma::Array => {
                                 stack.push(Expect::Separator(Separator::Comma(WhyComma::Array)));
                                 stack.push(Expect::Value(WhyValue::ArrayElement));
+                                wip = wip.push().unwrap();
                             }
                             WhyComma::Object => {
                                 // looks like we're in for another round of object parsing
@@ -461,7 +493,9 @@ pub fn from_slice_wip<'input, 'a>(
                         match why {
                             WhyComma::Array => {
                                 // we finished the array, neat
-                                wip = wip.pop().unwrap();
+                                if frame_count > 1 {
+                                    wip = wip.pop().unwrap();
+                                }
                             }
                             _ => {
                                 bailp!(JsonErrorKind::UnexpectedCharacter(c as char));

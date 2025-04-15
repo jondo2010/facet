@@ -58,18 +58,18 @@ fn json_read_nonzero() {
     assert_eq!(s.foo, { const { NonZero::new(1).unwrap() } });
 }
 
-// #[test]
-// fn json_read_vec() {
-//     facet_testhelpers::setup();
+#[test]
+fn json_read_vec() {
+    facet_testhelpers::setup();
 
-//     let json = r#"[1, 2, 3, 4, 5]"#;
+    let json = r#"[1, 2, 3, 4, 5]"#;
 
-//     let v: Vec<i32> = match from_str(json) {
-//         Ok(v) => v,
-//         Err(e) => panic!("Error deserializing JSON: {}", e),
-//     };
-//     assert_eq!(v, vec![1, 2, 3, 4, 5]);
-// }
+    let v: Vec<i32> = match from_str(json) {
+        Ok(v) => v,
+        Err(e) => panic!("Error deserializing JSON: {}", e),
+    };
+    assert_eq!(v, vec![1, 2, 3, 4, 5]);
+}
 
 // #[test]
 // fn json_read_empty_vec() {
