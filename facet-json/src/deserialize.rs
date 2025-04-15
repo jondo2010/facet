@@ -1,3 +1,8 @@
+use core::num::{
+    NonZeroI8, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroIsize, NonZeroU8, NonZeroU16, NonZeroU32,
+    NonZeroU64, NonZeroUsize,
+};
+
 use facet_ansi::Stylize as _;
 use facet_core::{Def, Facet, ScalarAffinity};
 use facet_reflect::{HeapValue, Wip};
@@ -316,14 +321,86 @@ pub fn from_slice_wip<'input, 'a>(
                                         } else {
                                             bailp!(JsonErrorKind::NumberOutOfRange(number));
                                         }
+                                    } else if shape.is_type::<NonZeroU8>() {
+                                        if number >= 1.0 && number <= u8::MAX as f64 {
+                                            let value = NonZeroU8::new(number as u8).unwrap();
+                                            wip = wip.put::<NonZeroU8>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroU16>() {
+                                        if number >= 1.0 && number <= u16::MAX as f64 {
+                                            let value = NonZeroU16::new(number as u16).unwrap();
+                                            wip = wip.put::<NonZeroU16>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroU32>() {
+                                        if number >= 1.0 && number <= u32::MAX as f64 {
+                                            let value = NonZeroU32::new(number as u32).unwrap();
+                                            wip = wip.put::<NonZeroU32>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroU64>() {
+                                        if number >= 1.0 && number <= u64::MAX as f64 {
+                                            let value = NonZeroU64::new(number as u64).unwrap();
+                                            wip = wip.put::<NonZeroU64>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroUsize>() {
+                                        if number >= 1.0 && number <= usize::MAX as f64 {
+                                            let value = NonZeroUsize::new(number as usize).unwrap();
+                                            wip = wip.put::<NonZeroUsize>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroI8>() {
+                                        if number >= 1.0 && number <= i8::MAX as f64 {
+                                            let value = NonZeroI8::new(number as i8).unwrap();
+                                            wip = wip.put::<NonZeroI8>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroI16>() {
+                                        if number >= 1.0 && number <= i16::MAX as f64 {
+                                            let value = NonZeroI16::new(number as i16).unwrap();
+                                            wip = wip.put::<NonZeroI16>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroI32>() {
+                                        if number >= 1.0 && number <= i32::MAX as f64 {
+                                            let value = NonZeroI32::new(number as i32).unwrap();
+                                            wip = wip.put::<NonZeroI32>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroI64>() {
+                                        if number >= 1.0 && number <= i64::MAX as f64 {
+                                            let value = NonZeroI64::new(number as i64).unwrap();
+                                            wip = wip.put::<NonZeroI64>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else if shape.is_type::<NonZeroIsize>() {
+                                        if number >= 1.0 && number <= isize::MAX as f64 {
+                                            let value = NonZeroIsize::new(number as isize).unwrap();
+                                            wip = wip.put::<NonZeroIsize>(value).unwrap();
+                                        } else {
+                                            bailp!(JsonErrorKind::NumberOutOfRange(number));
+                                        }
+                                    } else {
+                                        todo!("number type, but unknown")
                                     }
                                 }
                                 _ => {
-                                    todo!()
+                                    todo!("saw number in JSON but expected.. shape {}?", shape)
                                 }
                             },
                             _ => {
-                                todo!()
+                                todo!("saw number in JSON but expected.. shape {}?", shape)
                             }
                         }
 

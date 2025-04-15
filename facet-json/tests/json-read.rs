@@ -1,5 +1,7 @@
 // use std::num::NonZero;
 
+use std::num::NonZero;
+
 use facet::Facet;
 use facet_json::from_str;
 
@@ -26,35 +28,35 @@ fn json_read_simple_struct() {
     assert_eq!(s.hobbies[1], "coding");
 }
 
-// #[test]
-// fn json_read_empty_struct() {
-//     facet_testhelpers::setup();
+#[test]
+fn json_read_empty_struct() {
+    facet_testhelpers::setup();
 
-//     #[derive(Facet)]
-//     struct TestStruct {}
-//     let json = r#"{}"#;
+    #[derive(Facet)]
+    struct TestStruct {}
+    let json = r#"{}"#;
 
-//     let _: TestStruct = match from_str(json) {
-//         Ok(s) => s,
-//         Err(e) => panic!("Error deserializing JSON: {}", e),
-//     };
-// }
+    let _: TestStruct = match from_str(json) {
+        Ok(s) => s,
+        Err(e) => panic!("Error deserializing JSON: {}", e),
+    };
+}
 
-// #[test]
-// fn json_read_nonzero() {
-//     facet_testhelpers::setup();
+#[test]
+fn json_read_nonzero() {
+    facet_testhelpers::setup();
 
-//     #[derive(Facet)]
-//     struct Foo {
-//         foo: NonZero<u8>,
-//     }
-//     let json = r#"{"foo": 1}"#;
-//     let s: Foo = match from_str(json) {
-//         Ok(s) => s,
-//         Err(e) => panic!("Error deserializing JSON: {}", e),
-//     };
-//     assert_eq!(s.foo, { const { NonZero::new(1).unwrap() } });
-// }
+    #[derive(Facet)]
+    struct Foo {
+        foo: NonZero<u8>,
+    }
+    let json = r#"{"foo": 1}"#;
+    let s: Foo = match from_str(json) {
+        Ok(s) => s,
+        Err(e) => panic!("Error deserializing JSON: {}", e),
+    };
+    assert_eq!(s.foo, { const { NonZero::new(1).unwrap() } });
+}
 
 // #[test]
 // fn json_read_vec() {
